@@ -1,4 +1,4 @@
-''' a instagram post downloader plugin for @theUserge. '''
+""" a instagram post downloader plugin for @theUserge. """
 #
 # Copyright (C) 2020 by UsergeTeam@Github, < https://github.com/UsergeTeam >.
 #
@@ -30,7 +30,7 @@ from userge.plugins.misc.upload import get_thumb, remove_thumb
 
 # some helpers
 def get_caption(post: Post) -> str:
-    ''' adds link to profile for tagged users '''
+    """ adds link to profile for tagged users """
     caption = post.caption
     replace = '<a href="https://instagram.com/{}/">{}</a>'
     for mention in post.caption_mentions:
@@ -45,7 +45,7 @@ def get_caption(post: Post) -> str:
 
 
 async def upload_to_tg(message: Message, dirname: str, post: Post) -> None:  # pylint: disable=R0912
-    ''' uploads downloaded post from local to telegram servers '''
+    """ uploads downloaded post from local to telegram servers """
     pto = (".jpg", ".jpeg", ".png", ".bmp")
     vdo = (".mkv", ".mp4", ".webm")
     paths = []
@@ -120,26 +120,26 @@ async def upload_to_tg(message: Message, dirname: str, post: Post) -> None:  # p
 # run some process in threads?
 @pool.run_in_thread
 def download_post(client: Instaloader, post: Post) -> bool:
-    ''' Downloads content and returns True '''
+    """ Downloads content and returns True """
     client.download_post(post, post.owner_username)
     return True
 
 
 @pool.run_in_thread
 def get_post(client: Instaloader, shortcode: str) -> Post:
-    ''' returns a post object '''
+    """ returns a post object """
     return Post.from_shortcode(client.context, shortcode)
 
 
 @pool.run_in_thread
 def get_profile(client: Instaloader, username: str) -> Profile:
-    ''' returns profile '''
+    """ returns profile """
     return Profile.from_username(client.context, username)
 
 
 @pool.run_in_thread
 def get_profile_posts(profile: Profile) -> NodeIterator[Post]:
-    ''' returns a iterable Post object '''
+    """ returns a iterable Post object """
     return profile.get_posts()
 
 
@@ -147,7 +147,7 @@ def get_profile_posts(profile: Profile) -> NodeIterator[Post]:
 @userge.on_cmd("postdl", about={
     'header': "Instagram Post Downloader",
     'description': "Download a post of a instagram user by passing post link or download all posts "
-                    "by passing username of instagram user (<code>requires flag</code>)",
+                   "by passing username of instagram user (<code>requires flag</code>)",
     'flags': {'-u': "use this to define a batch download of post"},
     'usage': "{tr}postdl [flag] [link|username]",
     'examples': [
@@ -156,7 +156,7 @@ def get_profile_posts(profile: Profile) -> NodeIterator[Post]:
         "{tr}postdl -u [username]",
         "{tr}postdl -u instagram"]})
 async def _insta_post_downloader(message: Message):
-    ''' download instagram post '''
+    """ download instagram post """
     await message.edit('`Setting up Configs. Please don\'t flood.`')
     dirname = 'instadl_{target}'
     filename = '{target}\'s_post'
@@ -196,7 +196,7 @@ async def _insta_post_downloader(message: Message):
                         f'I have sent a message to {chat_type}. '
                         'Please continue there and send your 2FA code.')
                 await message.edit(text)
-                while True:
+                for _ in range(4):
                     # initial convo with the user who sent message in pm.
                     # if user is_self convo in saved messages
                     # else in pm of sudo user
@@ -207,10 +207,8 @@ async def _insta_post_downloader(message: Message):
                             # I said reply me.
                             continue
                         code = response.text
-                        if not code.isdigit():
+                        if not (code.isdigit() and len(code) == 6):
                             # the six digit code
-                            continue
-                        if len(code) != 6:
                             # What else it has always been a six digit code.
                             continue
                         try:
@@ -278,4 +276,4 @@ async def _insta_post_downloader(message: Message):
             shutil.rmtree(dirname.format(target=post.owner_username), ignore_errors=True)
         await sent.delete()
     else:
-        await message.err('`Invalid Input. Bye`')
+        await message.err('`Invalid Input`')
