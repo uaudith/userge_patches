@@ -11,8 +11,11 @@
 __all__ = ['logging']
 
 import logging
+import os
 from logging.handlers import RotatingFileHandler
 
+if not os.path.isfile("logs/userge.log"):
+    open("logs/userge.log", 'w+').close()
 logging.basicConfig(level=logging.INFO,
                     format='[%(asctime)s - %(levelname)s] - %(name)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S',
