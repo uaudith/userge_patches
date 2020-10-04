@@ -27,7 +27,7 @@ async def cBtn(message: Message):
         message.input_or_reply_str
     )
     mediaids: Union[Tuple[Optional[str], Optional[str]], None] = None
-    if message.reply_to_message.media:
+    if message.reply_to_message and message.reply_to_message.media:
         mediaids = get_file_id_and_ref(message.reply_to_message)
     elif message.media:
         mediaids = get_file_id_and_ref(message)
