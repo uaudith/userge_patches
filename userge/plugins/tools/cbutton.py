@@ -22,7 +22,7 @@ Channel = userge.getCLogger(__name__)
     'content': "<code>[name][buttonurl:link]</code> - <b>add a url button</b>\n"
                "<code>[name][buttonurl:link:same]</code> - <b>add a url button to same row</b>"
 })
-def cBtn(message: Message):
+async def cBtn(message: Message):
     note, kbrdMkup = parse_buttons(
         message.input_or_reply_str
     )
