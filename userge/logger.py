@@ -14,6 +14,7 @@ import logging
 import os
 from logging.handlers import RotatingFileHandler
 
+os.makedirs(os.path.dirname("logs/userge.log"), exist_ok=True)
 if not os.path.isfile("logs/userge.log"):
     open("logs/userge.log", 'w+').close()
 logging.basicConfig(level=logging.INFO,
